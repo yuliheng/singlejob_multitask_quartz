@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youlu.server.task.dao.ckhouse.BuMappingMapper">
+
+    <resultMap id="BaseResultMap" type="com.youlu.server.task.dao.ckhouse.entity.BuMappingDO">
+        <result column="buName" property="buName"/>
+        <result column="projectName" property="projectName"/>
+        <result column="orderBusinessType" property="orderBusinessType"/>
+        <result column="systemType" property="systemType"/>
+    </resultMap>
+
+
+    <sql id="BASE_COLUMN">
+        buName,projectName,orderBusinessType,systemType
+    </sql>
+
+    <insert id="insertList" parameterType="java.util.List">
+        INSERT INTO bu_mapping(<include refid="BASE_COLUMN"/>) VALUES
+        <foreach collection="list" separator="," item="item">
+            (#{item.buName}, #{item.projectName}, #{item.orderBusinessType}, #{item.systemType})
+        </foreach>
+    </insert>
+
+    <update id="optimize">
+        OPTIMIZE TABLE bu_mapping
+    </update>
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youlu.server.task.dao.ckhouse.LabelMapper">
+
+    <select id="queryLabelCustId" resultType="java.lang.String">
+        ${executeSql}
+    </select>
+
+    <select id="findDictInfoByType" resultType="com.youlu.server.task.dao.ckhouse.entity.DictInfoDO">
+        SELECT * FROM dict_info where type in
+        <foreach collection="types" item="type" open="(" close=")" separator=",">
+            #{type}
+        </foreach>
+    </select>
+    <select id="findClassByKeyword" resultType="com.youlu.server.task.dao.ckhouse.entity.DictInfoDO">
+        SELECT * FROM dict_info where type in
+        <foreach collection="types" item="type" open="(" close=")" separator=",">
+            #{type}
+        </foreach>
+        <if test="classKeyword != null">
+            and name like CONCAT('%',#{classKeyword},'%')
+        </if>
+
+    </select>
+</mapper>

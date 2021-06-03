@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youlu.server.task.dao.ckhouse.ProjectTotalMapper">
+
+
+    <select id="distinctOrderBusinessType"  resultType="java.lang.String">
+        SELECT distinct orderBusinessType FROM project_total;
+    </select>
+
+    <select id="distinctSystemType" resultType="java.lang.Integer">
+        SELECT distinct systemType FROM project_total;
+    </select>
+
+</mapper>

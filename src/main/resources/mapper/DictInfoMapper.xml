@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youlu.server.task.dao.ckhouse.DictInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.youlu.server.task.dao.ckhouse.entity.DictInfoDO">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="parentCode" property="parentCode"/>
+        <result column="type" property="type"/>
+    </resultMap>
+
+
+    <sql id="BASE_COLUMN">
+        id,name,code,parentCode,type
+    </sql>
+
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE id = #{id} AND type = #{type}
+    </select>
+
+    <select id="getByCode" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE code = #{code} AND type = #{type}
+    </select>
+
+    <select id="listByType" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE type = #{type}
+        ORDER BY name
+    </select>
+
+    <select id="listByParentCode" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE code like concat(#{parentCode},'%') AND type = #{type}
+        ORDER BY name
+    </select>
+
+    <select id="listByCodes" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE code in
+        <foreach collection="codes" item="code" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+        AND type = #{type}
+        ORDER BY name
+    </select>
+
+    <select id="distinctProjectName" resultType="java.lang.String">
+        SELECT distinct name FROM dict_info WHERE type = 'P' and length(code) > 10;
+    </select>
+
+    <select id="getProjectInfoByCollegeName" resultMap="BaseResultMap">
+        SELECT <include refid="BASE_COLUMN"/>
+        FROM dict_info
+        WHERE type = 'P' and length(code) > 10
+        and substring(code,1,10) in (SELECT code FROM dict_info WHERE type = 'P' and length(code) = 10 and name = #{collegeName})
+    </select>
+
+</mapper>

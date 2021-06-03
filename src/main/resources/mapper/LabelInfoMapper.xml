@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youlu.server.task.dao.mysql.LabelInfoMapper">
+
+    <insert id="saveLabelInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into label_auto_info(
+        custmk_label_id,
+        label_category,
+        label_name,
+        label_mode,
+        label_condition,
+        label_creator,
+        label_createddate,
+        label_modifier,
+        label_modifieddate,
+        label_delstatus,
+        label_avlstatus)
+        values(
+        #{labelInfoDO.custmkLabelId},
+        #{labelInfoDO.labelCategory},
+        #{labelInfoDO.labelName},
+        #{labelInfoDO.labelMode},
+        #{labelInfoDO.labelCondition},
+        #{labelInfoDO.labelCreator},
+        now(),
+        #{labelInfoDO.labelModifier},
+        now(),
+        #{labelInfoDO.labelDelstatus},
+        #{labelInfoDO.labelAavlstatus}
+        )
+    </insert>
+    <select id="findJobScheduleByJobName" resultType="java.lang.Long">
+        select count(*) from label_auto_job_schedule where job_name=#{jobName}
+    </select>
+    <select id="getFieldMappingByReportName"
+            resultType="com.youlu.server.task.dao.mysql.entity.LabelFieldMappingDO">
+        SELECT * FROM label_auto_filed_mapping WHERE report_name =#{reportName}
+    </select>
+    <insert id="saveLabelJobSchedule" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO label_auto_job_schedule (
+          job_name,
+          job_cron_expression,
+          job_parameter,
+          qrtz_job_name,
+          qrtz_trigger_name,
+          label_id,
+          job_firsttime,
+          job_lasttime,
+          job_duration,
+          job_process_status,
+          job_creator,
+          job_createddate,
+          job_modifier,
+          job_modifieddate,
+          job_status
+        ) VALUES(
+        #{labelJobSheduleDO.jobName},
+        #{labelJobSheduleDO.jobCronExpression},
+        #{labelJobSheduleDO.jobParameter},
+        #{labelJobSheduleDO.qrtzJobName},
+        #{labelJobSheduleDO.qrtzTriggerName},
+        #{labelJobSheduleDO.labelId},
+        #{labelJobSheduleDO.jobFirsttime},
+        #{labelJobSheduleDO.jobLasttime},
+        #{labelJobSheduleDO.jobDuration},
+        #{labelJobSheduleDO.jobProcessStatus},
+        #{labelJobSheduleDO.jobCreator},
+        now(),
+        #{labelJobSheduleDO.jobModifier},
+        now(),
+        #{labelJobSheduleDO.jobStatus})
+    </insert>
+    <delete id="deleteLabelInfoById">
+        DELETE
+        FROM
+          `label_auto_info`
+        WHERE id = #{labelId}
+    </delete>
+    <delete id="removeJobScheduleByLabelId">
+        DELETE
+        FROM
+          `label_auto_job_schedule`
+        WHERE label_id = #{labelId}
+    </delete>
+    <select id="findJobScheduleByLabelId"
+            resultType="com.youlu.server.task.dao.mysql.entity.LabelJobSheduleDO">
+        select * from label_auto_job_schedule  WHERE label_id = #{labelId};
+    </select>
+    <update id="updateLabelJobScheduleById">
+        UPDATE `label_auto_job_schedule`
+        SET job_parameter=#{labelJobSheduleDO.jobParameter},
+        job_modifieddate = now()
+        WHERE id = #{labelJobSheduleDO.id};
+    </update>
+    <update id="updateLabelJobScheduleStatusById">
+        UPDATE `label_auto_job_schedule`
+        SET job_status=#{status},
+        job_modifieddate = now()
+        WHERE id = #{labelId}
+    </update>
+    <select id="findLabelJobInfo" resultType="com.youlu.server.task.dao.mysql.entity.LabelJobInfo">
+        SELECT
+          i.id as labelId,
+          i.custmk_label_id,
+          i.label_name,
+          j.job_process_status
+        FROM
+          label_auto_info i
+          JOIN label_auto_job_schedule j
+            ON i.id = j.label_id
+         WHERE i.label_creator = #{labelQueryVO.labelCreator}
+        and i.label_createddate &gt;= #{labelQueryVO.labelCreatordatestart}
+        and i.label_createddate &lt;= #{labelQueryVO.labelCreatordateend}
+         ORDER BY i.label_createddate DESC
+         limit #{labelQueryVO.pageIndex} , #{labelQueryVO.pageSize}
+    </select>
+
+    <select id="findLabelJobInfoTotal" resultType="java.lang.Long">
+        SELECT
+          count(*)
+        FROM
+          label_auto_info i
+          JOIN label_auto_job_schedule j
+            ON i.id = j.label_id
+         WHERE i.label_creator = #{labelQueryVO.labelCreator}
+        and i.label_createddate &gt;= #{labelQueryVO.labelCreatordatestart}
+        and i.label_createddate &lt;= #{labelQueryVO.labelCreatordateend}
+    </select>
+
+
+
+
+    <update id="updateLabelJobSchedule">
+        UPDATE `label_auto_job_schedule`
+        SET
+        qrtz_job_name=#{labelJobSheduleDO.qrtzJobName},
+        qrtz_trigger_name=#{labelJobSheduleDO.qrtzTriggerName},
+        job_status=#{labelJobSheduleDO.jobStatus},
+        job_modifieddate = now()
+        WHERE label_id = #{labelJobSheduleDO.labelId}
+    </update>
+    <select id="findLabelInfoByLabelId" resultType="com.youlu.server.task.dao.mysql.entity.LabelInfoDO">
+        select * from label_auto_info
+        where id = #{labelId}
+
+    </select>
+    <update id="updateLabelJobScheduleJobProcessStatusById">
+        update label_auto_job_schedule set job_process_status=#{jobProcessStatus},
+        job_modifieddate = now()
+        where id = #{labelId}
+    </update>
+
+
+</mapper>

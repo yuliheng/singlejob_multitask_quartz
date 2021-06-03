@@ -1,0 +1,28 @@
+userlabel:
+  labelcreate:
+    accept: '*/*'
+    authorization: gateway USER20181023010000005660&admin&YOULU&SCHOOL20190411010000000019
+    Content-Type: application/json-patch+json
+    checkCode: CT/Label/Cmd/Add
+    url: http://servicedev.zywinner.com/marketing/api/label
+
+  labelquery:
+    accept: text/plain
+    authorization: gateway USER20181023010000005660&admin&YOULU&SCHOOL20190411010000000019
+    Content-Type: application/json-patch+json
+    checkCode:
+    url: http://servicedev.zywinner.com/marketing/api/label/list
+
+  labelremove:
+    accept: '*/*'
+    authorization: gateway USER20181023010000005660&admin&YOULU&SCHOOL20190411010000000019
+    Content-Type: application/json-patch+json
+    checkCode: CT/Label/Cmd/Del
+    url: http://servicedev.zywinner.com/marketing/api/label
+
+  labelbatchadd:
+    accept: '*/*'
+    authorization: gateway USER20181023010000005660&admin&YOULU&SCHOOL20190411010000000019
+    Content-Type: application/json
+    checkCode: CT/Customer/Cmd/BatchAddLable
+    url: http://service.zywinner.com/marketing/api/custlabel/batchaddlabel
